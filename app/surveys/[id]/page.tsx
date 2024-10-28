@@ -98,7 +98,11 @@ export default function SurveyPageComponent() {
         process.env.NEXT_PUBLIC_API_BASE_URL
       );
 
-      fetch(url)
+      fetch(url, {
+        headers: {
+          "ngrok-skip-browser-warning": "true",
+        },
+      })
         .then((response) => {
           console.log("Response status:", response.status);
           if (!response.ok) throw new Error("Network response was not ok");
