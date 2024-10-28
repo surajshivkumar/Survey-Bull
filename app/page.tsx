@@ -8,7 +8,7 @@ export default function Home() {
       <p>Select a survey to participate:</p>
       <ul>
         <li>
-          <Link href="/surveys/1">Survey 1</Link>
+          <Link href="/surveys/1">Survey 0</Link>
         </li>
         <li>
           <Link href="/surveys/2">Survey 2</Link>
