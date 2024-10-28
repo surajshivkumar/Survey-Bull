@@ -92,7 +92,7 @@ export default function SurveyPageComponent() {
   useEffect(() => {
     if (id) {
       setLoading(true);
-      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/surveys/json/${id}`;
+      const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/surveys/json/${id}?ngrok-skip-browser-warning=true`;
       console.log(
         "Fetching survey data from:",
         process.env.NEXT_PUBLIC_API_BASE_URL
