@@ -93,7 +93,10 @@ export default function SurveyPageComponent() {
     if (id) {
       setLoading(true);
       const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/surveys/json/${id}`;
-      console.log("Fetching survey data from:", url);
+      console.log(
+        "Fetching survey data from:",
+        process.env.NEXT_PUBLIC_API_BASE_URL
+      );
 
       fetch(url)
         .then((response) => {
