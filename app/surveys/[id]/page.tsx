@@ -145,11 +145,58 @@ export default function SurveyPageComponent() {
   };
 
   // Handle form submission
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     console.log("Survey submitted:", formData);
-    setIsSubmitted(true);
-    // Here you would typically send the data to your server
+
+    // Prepare the payload
+    const responseDto = {
+      SurveyId: surveyData.surveyId, // Make sure this matches your backend
+      Name: formData.name,
+      Email: formData.email,
+      Answers: surveyData.questions.map((question) => ({
+        QuestionId: question.questionId,
+        OptionId: formData[`question_${question.questionId}`]
+          ? question.options.find(
+              (option) =>
+                option.text === formData[`question_${question.questionId}`]
+            )?.optionId
+          : null,
+        TextAnswer: formData[`question_${question.questionId}`] || "",
+      })),
+    };
+
+    try {
+      //https://localhost:7216
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/surveys/submit`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(responseDto),
+        }
+      );
+
+      if (res.ok) {
+        const result = await res.json();
+        console.log("Response submitted successfully:", result);
+
+        setIsSubmitted(true); // Open the thank you dialog
+        // isSubmitted
+        // resetForm(); // Reset the form after successful submission
+      } else {
+        const error = await res.json();
+        console.error("Failed to submit response:", error);
+        setError(
+          error.message || "Failed to submit response. Please try again."
+        );
+      }
+    } catch (error) {
+      console.error("Error submitting survey:", error);
+      setError("An unexpected error occurred. Please try again.");
+    }
   };
 
   // Reset the form after submission
@@ -339,7 +386,7 @@ export default function SurveyPageComponent() {
       </div>
 
       {/* Thank You Dialog */}
-      <Dialog open={isSubmitted} onOpenChange={setIsSubmitted}>
+      <Dialog open={isSubmitted} onOpenChange={(open) => setIsSubmitted(open)}>
         <DialogContent className="sm:max-w-[425px]">
           <DialogHeader>
             <DialogTitle className="text-center text-2xl font-bold text-green-600">
@@ -360,7 +407,10 @@ export default function SurveyPageComponent() {
           </DialogHeader>
           <div className="flex justify-center mt-4">
             <Button
-              onClick={resetForm}
+              onClick={() => {
+                setIsSubmitted(false); // Close the dialog
+                resetForm(); // Reset the form data
+              }}
               className="bg-green-600 hover:bg-green-700 text-white"
             >
               Close
