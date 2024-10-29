@@ -88,7 +88,7 @@ export default function SurveyPageComponent() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  // Fetch survey data based on 'id'
+  // Fetch survey data based on 'id' pme
   useEffect(() => {
     if (id) {
       setLoading(true);
